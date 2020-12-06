@@ -86,7 +86,8 @@ const getHeatMapData = () => {
   const MapChart = () => {
     const [tooltipContent, setTooltipContent] = useState('');
     const [data, setData] = useState(getHeatMapData());
-  
+
+    
     const gradientData = {
       fromColor: COLOR_RANGE[0],
       toColor: COLOR_RANGE[COLOR_RANGE.length - 1],
@@ -127,7 +128,7 @@ const getHeatMapData = () => {
           {({ geographies }) =>
             geographies.map(geo => {
               const current = data.find(s => s.dt_code === geo.properties.dt_code);
-              console.log("This is geo",geo);
+              // console.log("This is geo",geo);
               return (
                 <Geography
                   key={geo.rsmKey}
