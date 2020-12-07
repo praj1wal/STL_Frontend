@@ -5,8 +5,8 @@ import ReactTooltip from 'react-tooltip';
 
     
   const PROJECTION_CONFIG = {
-    scale: 700,
-    center: [78.9629, 22.5937]
+    scale: 1000,
+    center: [78.9629, 15.5937]
   };
   
 
@@ -89,16 +89,17 @@ const getHeatMapData = () => {
 
   function MapChart ({datum}) {
 
-
+console.log("This is datum",datum)
     var arr = [];
-var len = datum.length;
+var len = datum[0].length;
 for (var i = 0; i < len; i++) {
     arr.push({
-      dt_code: datum.district_id[i],
-      district: datum.district_name[i],
-      value: datum.samples[i]
+      dt_code: datum[0].district_id[i],
+      district: datum[0].district_name[i],
+      value: datum[0].samples[i]
     });
 }
+console.log("This is arr",arr)
 
     const [tooltipContent, setTooltipContent] = useState('');
     const [data, setData] = useState(arr);
