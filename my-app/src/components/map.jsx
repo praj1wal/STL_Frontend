@@ -12,6 +12,8 @@ import ReactTooltip from 'react-tooltip';
 
   
 const MAHARASHTRA_TOPO_JSON = require('./maharashtra.topo.json');
+const KARNATAKA_TOPO_JSON = require('./karnataka.topo.json');
+
 
 const getHeatMapData = () => {
     return [
@@ -54,6 +56,8 @@ const getHeatMapData = () => {
   ];
 };
 
+
+
   const COLOR_RANGE = [
     '#ffedea',
     '#ffcec5',
@@ -83,9 +87,21 @@ const getHeatMapData = () => {
   };
  
 
-  const MapChart = () => {
+  function MapChart ({datum}) {
+
+
+    var arr = [];
+var len = datum.length;
+for (var i = 0; i < len; i++) {
+    arr.push({
+      dt_code: datum.district_id[i],
+      district: datum.district_name[i],
+      value: datum.samples[i]
+    });
+}
+
     const [tooltipContent, setTooltipContent] = useState('');
-    const [data, setData] = useState(getHeatMapData());
+    const [data, setData] = useState(arr);
 
     
     const gradientData = {
@@ -124,10 +140,10 @@ const getHeatMapData = () => {
         height={220}
         data-tip=""
     >
-        <Geographies geography={MAHARASHTRA_TOPO_JSON}>
+        <Geographies geography={KARNATAKA_TOPO_JSON}>
           {({ geographies }) =>
             geographies.map(geo => {
-              const current = data.find(s => s.dt_code === geo.properties.dt_code);
+              const current = data.find(s => s.district.toUpperCase() === geo.properties.district.toUpperCase());
               // console.log("This is geo",geo);
               return (
                 <Geography
