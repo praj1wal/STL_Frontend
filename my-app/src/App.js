@@ -6,7 +6,7 @@ import axios from 'axios';
 function App() {
   
   const [state, setState] = React.useState({
-    file: '',
+    files: '',
     data:undefined,
   });
 
@@ -14,15 +14,18 @@ function App() {
   const handleFileChange = (event) => {
     setState({
       ...state,
-      file: event.target.files[0],
+      files: event.target.files,
     });
   };
 
   const onSubmit = (event) =>{
 		event.preventDefault()
 		const data = new FormData()
-		let file  = state.file;
-		data.append('file',file)
+    let files  = state.files;
+    console.log(files)
+    for(var i = 0; i < files.length;i++){
+      data.append(`file${i}`, files[i]);
+    }
       		axios
         		.post(
           			"/",
@@ -48,7 +51,7 @@ function App() {
     <div className="App">
       <div>
         <form onSubmit={onSubmit}>
-            <input type="file" name="file"  onChange= {handleFileChange}/>
+            <input type="file" name="files[]" multiple onChange= {handleFileChange}/>
           <button>Submit File</button>
         </form>
       </div>
