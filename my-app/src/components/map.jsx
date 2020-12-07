@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import { scaleQuantile } from 'd3-scale';
 import ReactTooltip from 'react-tooltip';
-
+import Pie from './Pie';
     
   const PROJECTION_CONFIG = {
     scale: 1000,
@@ -14,6 +14,9 @@ import ReactTooltip from 'react-tooltip';
 const MAHARASHTRA_TOPO_JSON = require('./maharashtra.topo.json');
 const KARNATAKA_TOPO_JSON = require('./karnataka.topo.json');
 
+const dicionary = {
+
+}
 
 const getHeatMapData = () => {
     return [
@@ -91,19 +94,19 @@ const getHeatMapData = () => {
 
 console.log("This is datum",datum)
     var arr = [];
-var len = datum[0].length;
-for (var i = 0; i < len; i++) {
-    arr.push({
-      dt_code: datum[0].district_id[i],
-      district: datum[0].district_name[i],
-      value: datum[0].samples[i]
-    });
-}
-console.log("This is arr",arr)
+    var len = datum[0].length;
+    for (var i = 0; i < len; i++) {
+        arr.push({
+          dt_code: datum[0].district_id[i],
+          district: datum[0].district_name[i],
+          value: datum[0].samples[i]
+        });
+    }
+    console.log("This is arr",arr)
 
     const [tooltipContent, setTooltipContent] = useState('');
     const [data, setData] = useState(arr);
-
+    const [piedata, setPieData] = useState([])
     
     const gradientData = {
       fromColor: COLOR_RANGE[0],
@@ -130,40 +133,54 @@ console.log("This is arr",arr)
       setData(getHeatMapData());
     };
 
+    const onClick = (geo, curr) => {
+      var pdata = []
+      for(var i = 0; i < datum[1].length; i++){
+        if(curr.dt_code === datum[1].district_id[i]){
+          pdata.push({"name":datum[1].id[i], "value":datum[1].capacity[i]})
+        }
+      }
+      setPieData(pdata)
+    };
+
   return (
-      <>
-       <h1 className="no-margin center">States and UTs</h1>
+    <>
+      <h1 className="no-margin center">States and UTs</h1>
       <ReactTooltip>{tooltipContent}</ReactTooltip>
-    <ComposableMap
-        projectionConfig={PROJECTION_CONFIG}
-        projection="geoMercator"
-        width={600}
-        height={220}
-        data-tip=""
-    >
-        <Geographies geography={KARNATAKA_TOPO_JSON}>
-          {({ geographies }) =>
-            geographies.map(geo => {
-              const current = data.find(s => s.district.toUpperCase() === geo.properties.district.toUpperCase());
-              // console.log("This is geo",geo);
-              return (
-                <Geography
-                  key={geo.rsmKey}
-                  geography={geo}
-                  fill={current ? colorScale(current.value) : DEFAULT_COLOR}
-                  style={geographyStyle}
-                  onMouseEnter={onMouseEnter(geo, current)}
-                  onMouseLeave={onMouseLeave}
-                />
-              );
-            })
-          }
-        </Geographies>
-    </ComposableMap>
-        <div className="center">
-          <button className="mt16" onClick={onChangeButtonClick}>Change</button>
-        </div>
-</>
+      <ComposableMap
+          projectionConfig={PROJECTION_CONFIG}
+          projection="geoMercator"
+          width={600}
+          height={220}
+          data-tip=""
+      >
+          <Geographies geography={KARNATAKA_TOPO_JSON}>
+            {({ geographies }) =>
+              geographies.map(geo => {
+                const current = data.find(s => s.district.toUpperCase() === geo.properties.district.toUpperCase());
+                // console.log("This is geo",geo);
+                return (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    fill={current ? colorScale(current.value) : DEFAULT_COLOR}
+                    style={geographyStyle}
+                    onMouseEnter={onMouseEnter(geo, current)}
+                    onMouseLeave={onMouseLeave}
+                    onClick={()=>{onClick(geo, current)}}
+                  />
+                );
+              })
+            }
+          </Geographies>
+      </ComposableMap>
+      <div className="center">
+        <button className="mt16" onClick={onChangeButtonClick}>Change</button>
+      </div>
+      <div className="center">
+        <Pie data={piedata}/>
+      </div>
+    </>
   );
 };
 

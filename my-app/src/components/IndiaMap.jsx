@@ -5,6 +5,7 @@ import ReactTooltip from 'react-tooltip';
 import axios from 'axios';
 import {Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, Button} from '@material-ui/core';
 import Map from './map';
+import Pie from './Pie';
     
   const PROJECTION_CONFIG = {
     scale: 1000,
@@ -66,8 +67,7 @@ const getHeatMapData = () => {
     const [open, setOpen] = React.useState(false);
     const [variable,setVariable]=useState(false);
     const [pass,setPass]=useState('');
-
-
+    const [state, setFiles] = React.useState({file1:"", file2:"", file3:""});
 
     const handleClickOpen = () => {
       setOpen(true);
@@ -106,18 +106,18 @@ const getHeatMapData = () => {
       setData(getHeatMapData());
     };
 
-    const [files, setFiles] = React.useState([]);
+    
     const handleFileChange = (event) => {
-        setFiles(event.target.files)
+        setFiles({...state, [event.target.name] : event.target.files[0]})
       };
     
     const onSubmit = (event) =>{
         event.preventDefault()
         const data = new FormData()
-        let filesData  = files;
-        for(var i = 0; i < filesData.length;i++){
-            data.append(`file${i}`, filesData[i]);
-        }
+        console.log(state)
+        data.append("file1",state.file1)
+        data.append("file2",state.file2)
+        data.append("file3",state.file3)
             axios
                 .post(
                         "/",
@@ -179,13 +179,15 @@ const getHeatMapData = () => {
             </DialogContentText>
         </DialogContent>
         <DialogActions>
+            <form onSubmit={onSubmit}>
+                <input type="file" name="file1"  onChange= {handleFileChange}/><br/>
+                <input type="file" name="file2"  onChange= {handleFileChange}/><br/>
+                <input type="file" name="file3"  onChange= {handleFileChange}/><br/>
+                <Button type="submit" color="primary">Submit File</Button>
+            </form>
             <Button onClick={handleClose} color="primary">
                 Cancel
             </Button>
-            <form onSubmit={onSubmit}>
-                <input type="file" name="files" multiple onChange= {handleFileChange}/>
-                <Button type="submit" color="primary">Submit File</Button>
-            </form>
         </DialogActions>
     </Dialog>
     <div className="center">
@@ -193,7 +195,11 @@ const getHeatMapData = () => {
     </div>
     </div>
   }
-  {variable===true && <Map datum={pass}/>}
+  {variable===true &&(
+    <div>
+      <Map datum={pass}/>
+    </div>
+  )}
 </>
   );
 };
