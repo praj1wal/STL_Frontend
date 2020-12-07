@@ -3,6 +3,7 @@ import './App.css';
 import Map from './components/map';
 import IndiaMap from './components/IndiaMap';
 import {AppBar, Toolbar, Typography} from '@material-ui/core';
+import Pie from './components/Pie';
 function App() {
   
   
@@ -14,7 +15,8 @@ function App() {
         </Toolbar>
       </AppBar>
       <Typography variant="h3">CNI SWABS2LABS HACKATHON</Typography>
-       <IndiaMap />
+       {/* <IndiaMap /> */}
+       <Pie />
     </div>
   );
 }
