@@ -4,6 +4,7 @@ import { scaleQuantile } from 'd3-scale';
 import ReactTooltip from 'react-tooltip';
 import axios from 'axios';
 import {Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, Button} from '@material-ui/core';
+import Map from './map';
     
   const PROJECTION_CONFIG = {
     scale: 1000,
@@ -24,6 +25,7 @@ const getHeatMapData = () => {
         }
         data.push(curr)
     }
+    //console.log("This is data",data)
     return data
 };
 
@@ -62,6 +64,10 @@ const getHeatMapData = () => {
     const [data, setData] = useState(getHeatMapData());
 
     const [open, setOpen] = React.useState(false);
+    const [variable,setVariable]=useState(false);
+    const [pass,setPass]=useState('');
+
+
 
     const handleClickOpen = () => {
       setOpen(true);
@@ -125,6 +131,8 @@ const getHeatMapData = () => {
                 )
             .then(res => {
                 console.log(res.data);
+                setPass(res.data);
+                setVariable(true);
                 setOpen(false)
             })
             .catch(err =>{
@@ -135,7 +143,7 @@ const getHeatMapData = () => {
 
   return (
     <>
-    <ReactTooltip>{tooltipContent}</ReactTooltip>
+    {variable === false && <div><ReactTooltip>{tooltipContent}</ReactTooltip>
     <ComposableMap
         projectionConfig={PROJECTION_CONFIG}
         projection="geoMercator"
@@ -183,6 +191,9 @@ const getHeatMapData = () => {
     <div className="center">
         <button className="mt16" onClick={onChangeButtonClick}>Change</button>
     </div>
+    </div>
+  }
+  {variable===true && <Map datum={pass}/>}
 </>
   );
 };

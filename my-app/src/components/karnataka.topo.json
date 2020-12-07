@@ -14903,7 +14903,7 @@
                     "type": "Polygon",
                     "properties": {
                         "dt_code": "579",
-                        "district": "Kalaburagi",
+                        "district": "Kalaburgi",
                         "st_code": "29",
                         "year": "2011_c",
                         "st_nm": "Karnataka"
@@ -14941,7 +14941,7 @@
                     "type": "Polygon",
                     "properties": {
                         "dt_code": "580",
-                        "district": "Yadgir",
+                        "district": "Yadgiri",
                         "st_code": "29",
                         "year": "2011_c",
                         "st_nm": "Karnataka"
@@ -14960,7 +14960,7 @@
                     "type": "Polygon",
                     "properties": {
                         "dt_code": "556",
-                        "district": "Bagalkote",
+                        "district": "Bagalkot",
                         "st_code": "29",
                         "year": "2011_c",
                         "st_nm": "Karnataka"
@@ -15039,7 +15039,7 @@
                     "type": "Polygon",
                     "properties": {
                         "dt_code": "565",
-                        "district": "Ballari",
+                        "district": "Bellary",
                         "st_code": "29",
                         "year": "2011_c",
                         "st_nm": "Karnataka"
@@ -15156,7 +15156,7 @@
                     "type": "Polygon",
                     "properties": {
                         "dt_code": "568",
-                        "district": "Shivamogga",
+                        "district": "Shimoga",
                         "st_code": "29",
                         "year": "2011_c",
                         "st_nm": "Karnataka"
@@ -15196,7 +15196,7 @@
                     "type": "Polygon",
                     "properties": {
                         "dt_code": "570",
-                        "district": "Chikkamagaluru",
+                        "district": "Chikkamagalur",
                         "st_code": "29",
                         "year": "2011_c",
                         "st_nm": "Karnataka"
@@ -15214,7 +15214,7 @@
                     "type": "Polygon",
                     "properties": {
                         "dt_code": "582",
-                        "district": "Chikkaballapura",
+                        "district": "Chikkaballapur",
                         "st_code": "29",
                         "year": "2011_c",
                         "st_nm": "Karnataka"
@@ -15290,7 +15290,7 @@
                     "type": "Polygon",
                     "properties": {
                         "dt_code": "575",
-                        "district": "Dakshina Kannada",
+                        "district": "Dakshin Kannada",
                         "st_code": "29",
                         "year": "2011_c",
                         "st_nm": "Karnataka"
@@ -15307,7 +15307,7 @@
                     "type": "Polygon",
                     "properties": {
                         "dt_code": "572",
-                        "district": "Bengaluru",
+                        "district": "Bengaluru Urban",
                         "st_code": "29",
                         "year": "2011_c",
                         "st_nm": "Karnataka"
@@ -15378,7 +15378,7 @@
                     "type": "MultiPolygon",
                     "properties": {
                         "dt_code": "571",
-                        "district": "Tumakuru",
+                        "district": "Tumkur",
                         "st_code": "29",
                         "year": "2011_c",
                         "st_nm": "Karnataka"
