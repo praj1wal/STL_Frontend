@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
+import { ComposableMap, Geographies, Geography, Line, Marker } from 'react-simple-maps';
 import { scaleQuantile } from 'd3-scale';
 import ReactTooltip from 'react-tooltip';
 import Pie from './Pie';
     
   const PROJECTION_CONFIG = {
-    scale: 1000,
+    scale: 2000,
     center: [78.9629, 15.5937]
   };
   
@@ -107,7 +107,7 @@ console.log("This is datum",datum)
     const [tooltipContent, setTooltipContent] = useState('');
     const [data, setData] = useState(arr);
     const [piedata, setPieData] = useState([])
-    
+    const [routeData, setRouteData] = useState([])
     const gradientData = {
       fromColor: COLOR_RANGE[0],
       toColor: COLOR_RANGE[COLOR_RANGE.length - 1],
@@ -141,7 +141,37 @@ console.log("This is datum",datum)
         }
       }
       setPieData(pdata)
+      showRoute(curr)
     };
+
+    const showRoute = (curr) => {
+      console.log("route")
+      let data = []
+      let lat = 0
+      let lon = 0
+      for(var i = 0; i < datum[0].length; i++){
+        if(curr.dt_code === datum[0].district_id[i]){
+          lat = datum[0].lat[i]
+          lon = datum[0].lon[i]
+          break
+        }
+      }
+      for(var i = 0; i < datum[2].length; i++){
+        if(curr.dt_code === datum[2].source[i]){
+          let destlat = 0 
+          let destlon = 0
+          for(var j = 0; j < datum[1].length; j++){
+            if(datum[2].destination[i] === datum[1].id[j]){
+              destlat = datum[1].lat[j]
+              destlon = datum[1].lon[j]
+              break
+            }
+          }
+          data.push({src:[lon, lat],dest:[destlon, destlat]})
+        }
+      }
+      setRouteData(data)
+    }
 
   return (
     <>
@@ -151,7 +181,7 @@ console.log("This is datum",datum)
           projectionConfig={PROJECTION_CONFIG}
           projection="geoMercator"
           width={600}
-          height={220}
+          height={400}
           data-tip=""
       >
           <Geographies geography={KARNATAKA_TOPO_JSON}>
@@ -173,12 +203,27 @@ console.log("This is datum",datum)
               })
             }
           </Geographies>
+          {routeData.length !== 0 && (
+            <Marker coordinates={routeData[0].src}>
+              <circle r={4} fill="#0000FF" />
+            </Marker>
+          )}
+          {routeData.map((curr)=>{
+            return(  
+              <Line
+              from={curr.src}
+              to={curr.dest}
+              stroke="#000000"
+              strokeWidth={1}
+              strokeLineCap="round"
+            />)
+          })}
       </ComposableMap>
       <div className="center">
         <button className="mt16" onClick={onChangeButtonClick}>Change</button>
       </div>
       <div className="center">
-        <Pie data={piedata}/>
+        <Pie data={piedata} />
       </div>
     </>
   );
