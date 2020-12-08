@@ -3,6 +3,7 @@ import { ComposableMap, Geographies, Geography, Line, Marker } from 'react-simpl
 import { scaleQuantile } from 'd3-scale';
 import ReactTooltip from 'react-tooltip';
 import Pie from './Pie';
+import Donut from './donut';
     
   const PROJECTION_CONFIG = {
     scale: 2000,
@@ -170,6 +171,7 @@ console.log("This is datum",datum)
           data.push({src:[lon, lat],dest:[destlon, destlat]})
         }
       }
+      console.log("This is data",data);
       setRouteData(data)
     }
 
@@ -224,6 +226,7 @@ console.log("This is datum",datum)
       </div>
       <div className="center">
         <Pie data={piedata} />
+        <Donut />
       </div>
     </>
   );
