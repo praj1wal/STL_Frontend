@@ -4,6 +4,7 @@ import { scaleQuantile } from 'd3-scale';
 import ReactTooltip from 'react-tooltip';
 import Pie from './Pie';
 import Donut from './donut';
+import TabPanel from './table';
     
   const PROJECTION_CONFIG = {
     scale: 2000,
@@ -105,9 +106,27 @@ console.log("This is datum",datum)
     }
     console.log("This is arr",arr)
 
+    var dondata = []
+    for(var i = 0; i <= datum[0].length; i++){
+      dondata.push({publiclab:0, privatelab:0})
+    }
+    console.log("This is dondata",dondata)
+
+    for(var i = 0; i < datum[1].length; i++){
+      if(!datum[1].lab_type[i]){
+      dondata[datum[1].district_id[i]].publiclab++;
+      }
+      else{
+        dondata[datum[1].district_id[i]].privatelab++;
+      }
+    }
+
+
+
     const [tooltipContent, setTooltipContent] = useState('');
     const [data, setData] = useState(arr);
     const [piedata, setPieData] = useState([])
+    const [donutdata, setDonutData] = useState([])
     const [routeData, setRouteData] = useState([])
     const gradientData = {
       fromColor: COLOR_RANGE[0],
@@ -143,6 +162,9 @@ console.log("This is datum",datum)
       }
       setPieData(pdata)
       showRoute(curr)
+      var nayadata=[{"name":"publiclab" ,"value": dondata[curr.dt_code].publiclab},{"name":"privatelab" ,"value": dondata[curr.dt_code].privatelab}]
+      console.log("This is nayadata",nayadata)
+      setDonutData(nayadata)
     };
 
     const showRoute = (curr) => {
@@ -226,7 +248,8 @@ console.log("This is datum",datum)
       </div>
       <div className="center">
         <Pie data={piedata} />
-        <Donut />
+        <Donut data={donutdata} />
+        <TabPanel/>
       </div>
     </>
   );
