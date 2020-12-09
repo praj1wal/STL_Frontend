@@ -1,65 +1,16 @@
 import React, { useState } from 'react';
-import { ComposableMap, Geographies, Geography, Line, Marker } from 'react-simple-maps';
+import { ComposableMap, Geographies, Geography, Line, Marker, ZoomableGroup } from 'react-simple-maps';
 import { scaleQuantile } from 'd3-scale';
 import ReactTooltip from 'react-tooltip';
 import Pie from './Pie';
 import Donut from './donut';
-import TabPanel from './table';
-    
+import Table from './table';
+import {Grid, Paper, Button} from '@material-ui/core';
+import LinearGradient from './LinearGradient';
   const PROJECTION_CONFIG = {
-    scale: 2000,
-    center: [78.9629, 15.5937]
+    scale:1000,
   };
   
-
-  
-const MAHARASHTRA_TOPO_JSON = require('./maharashtra.topo.json');
-const KARNATAKA_TOPO_JSON = require('./karnataka.topo.json');
-
-const dicionary = {
-
-}
-
-const getHeatMapData = () => {
-    return [
-    { dt_code: '507', district: 'Gondiya', value: 23 },
-    { dt_code: '506', district: 'Bhandara', value: 20 },
-    { dt_code: '499', district: 'Jalgaon', value: 20 },
-    { dt_code: '504', district: 'Wardha', value: 24 },
-    { dt_code: '500', district: 'Buldana', value: 27 },
-    { dt_code: '501', district: 'Akola', value: 21 },
-    { dt_code: '516', district: 'Nashik', value: 22 },
-    { dt_code: '508', district: 'Gadchiroli', value: 29 },
-    { dt_code: '502', district: 'Washim', value: 24 },
-    { dt_code: '509', district: 'Chandrapur', value: 26 },
-    { dt_code: '510', district: 'Yavatmal', value: 27 },
-    { dt_code: '514', district: 'Jalna', value: 22 },
-    { dt_code: '522', district: 'Ahmadnagar', value: 28 },
-    { dt_code: '512', district: 'Hingoli', value: 28 },
-    { dt_code: '511', district: 'Nanded', value: 21 },
-    { dt_code: '513', district: 'Parbhani', value: 59 },
-    { dt_code: '521', district: 'Pune', value: 29 },
-    { dt_code: '523', district: 'Bid', value: 59 },
-    { dt_code: '519', district: 'Mumbai', value: 59 },
-    { dt_code: '524', district: 'Latur', value: 24 },
-    { dt_code: '525', district: 'Osmanabad', value: 27 },
-    { dt_code: '526', district: 'Solapur', value: 21 },
-    { dt_code: '527', district: 'Satara', value: 29 },
-    { dt_code: '528', district: 'Ratnagiri', value: 20 },
-    { dt_code: '531', district: 'Sangli', value: 14 },
-    { dt_code: '530', district: 'Kolhapur', value: 25 },
-    { dt_code: '529', district: 'Sindhudurg', value: 15 },
-    { dt_code: '517', district: 'Thane', value: 17 },
-    { dt_code: '732', district: 'Palghar', value: 17 },
-    { dt_code: '497', district: 'Nandurbar', value: 27 },
-    { dt_code: '503', district: 'Amravati', value: 29 },
-    { dt_code: '498', district: 'Dhule', value: 19 },
-    { dt_code: '505', district: 'Nagpur', value: 20 },
-    { dt_code: '515', district: 'Aurangabad', value: 59 },
-    { dt_code: '520', district: 'Raigarh', value: 25 },
-    { dt_code: '518', district: 'Mumbai Suburban', value: 25 },
-  ];
-};
 
 
 
@@ -92,12 +43,13 @@ const getHeatMapData = () => {
   };
  
 
-  function MapChart ({datum}) {
-
+  function MapChart ({datum, area}) {
+    const KARNATAKA_TOPO_JSON = require(`./${area}.topo.json`);
 console.log("This is datum",datum)
     var arr = [];
     var len = datum[0].length;
-    for (var i = 0; i < len; i++) {
+    var i
+    for (i = 0; i < len; i++) {
         arr.push({
           dt_code: datum[0].district_id[i],
           district: datum[0].district_name[i],
@@ -107,12 +59,12 @@ console.log("This is datum",datum)
     console.log("This is arr",arr)
 
     var dondata = []
-    for(var i = 0; i <= datum[0].length; i++){
+    for(i = 0; i <= datum[0].length; i++){
       dondata.push({publiclab:0, privatelab:0})
     }
     console.log("This is dondata",dondata)
 
-    for(var i = 0; i < datum[1].length; i++){
+    for(i = 0; i < datum[1].length; i++){
       if(!datum[1].lab_type[i]){
       dondata[datum[1].district_id[i]].publiclab++;
       }
@@ -125,6 +77,7 @@ console.log("This is datum",datum)
 
     const [tooltipContent, setTooltipContent] = useState('');
     const [data, setData] = useState(arr);
+    const [zoomdata, setZoom] = useState(1)
     const [piedata, setPieData] = useState([])
     const [donutdata, setDonutData] = useState([])
     const [routeData, setRouteData] = useState([])
@@ -148,10 +101,19 @@ console.log("This is datum",datum)
     const onMouseLeave = () => {
       setTooltipContent('');
     };
+
+    const onZoomIn = () => {
+      let currzoom = zoomdata
+      setZoom(currzoom+1)
+    }
+    const onZoomOut = () => {
+      let currzoom = zoomdata
+      if(currzoom === 1){
+        return
+      }
+      setZoom(currzoom-1)
+    }
   
-    const onChangeButtonClick = () => {
-      setData(getHeatMapData());
-    };
 
     const onClick = (geo, curr) => {
       var pdata = []
@@ -172,14 +134,15 @@ console.log("This is datum",datum)
       let data = []
       let lat = 0
       let lon = 0
-      for(var i = 0; i < datum[0].length; i++){
+      var i = 0
+      for(i = 0; i < datum[0].length; i++){
         if(curr.dt_code === datum[0].district_id[i]){
           lat = datum[0].lat[i]
           lon = datum[0].lon[i]
           break
         }
       }
-      for(var i = 0; i < datum[2].length; i++){
+      for(i = 0; i < datum[2].length; i++){
         if(curr.dt_code === datum[2].source[i]){
           let destlat = 0 
           let destlon = 0
@@ -197,61 +160,83 @@ console.log("This is datum",datum)
       setRouteData(data)
     }
 
+    const handleFilter = ({ constructor: { name } }) => {
+      return name !== "WheelEvent";
+    };
+
   return (
-    <>
-      <h1 className="no-margin center">States and UTs</h1>
-      <ReactTooltip>{tooltipContent}</ReactTooltip>
-      <ComposableMap
-          projectionConfig={PROJECTION_CONFIG}
-          projection="geoMercator"
-          width={600}
-          height={400}
-          data-tip=""
-      >
-          <Geographies geography={KARNATAKA_TOPO_JSON}>
-            {({ geographies }) =>
-              geographies.map(geo => {
-                const current = data.find(s => s.district.toUpperCase() === geo.properties.district.toUpperCase());
-                // console.log("This is geo",geo);
-                return (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    fill={current ? colorScale(current.value) : DEFAULT_COLOR}
-                    style={geographyStyle}
-                    onMouseEnter={onMouseEnter(geo, current)}
-                    onMouseLeave={onMouseLeave}
-                    onClick={()=>{onClick(geo, current)}}
-                  />
-                );
-              })
-            }
-          </Geographies>
-          {routeData.length !== 0 && (
-            <Marker coordinates={routeData[0].src}>
-              <circle r={4} fill="#0000FF" />
-            </Marker>
-          )}
-          {routeData.map((curr)=>{
-            return(  
-              <Line
-              from={curr.src}
-              to={curr.dest}
-              stroke="#000000"
-              strokeWidth={1}
-              strokeLineCap="round"
-            />)
-          })}
-      </ComposableMap>
-      <div className="center">
-        <button className="mt16" onClick={onChangeButtonClick}>Change</button>
-      </div>
-      <div className="center">
-        <Pie data={piedata} />
-        <Donut data={donutdata} />
-        <TabPanel/>
-      </div>
-    </>
+    <div style={{overflow:"hidden"}}>
+    <Grid container spacing={2} >
+      <Grid item xs={2} sm={2} style={{marginLeft:"5%"}}>
+          <h2>{area.toUpperCase()}</h2>
+          <LinearGradient data={gradientData} />
+      </Grid>
+      <Grid item xs = {8} sm = {8} >
+          <ReactTooltip>{tooltipContent}</ReactTooltip>
+          <ComposableMap
+              projectionConfig={PROJECTION_CONFIG}
+              projection="geoMercator"
+              width={280}
+              height={150}
+              data-tip=""
+          >
+            <ZoomableGroup zoom={zoomdata} filterZoomEvent={handleFilter} center={[77,15]}>
+              <Geographies geography={KARNATAKA_TOPO_JSON}>
+                {({ geographies }) =>
+                  geographies.map(geo => {
+                    const current = data.find(s => s.district.toUpperCase() === geo.properties.district.toUpperCase());
+                    // console.log("This is geo",geo);
+                    return (
+                      <Geography
+                        key={geo.rsmKey}
+                        geography={geo}
+                        fill={current ? colorScale(current.value) : DEFAULT_COLOR}
+                        style={geographyStyle}
+                        onMouseEnter={onMouseEnter(geo, current)}
+                        onMouseLeave={onMouseLeave}
+                        onClick={()=>{onClick(geo, current)}}
+                      />
+                    );
+                  })
+                }
+              </Geographies>
+              {routeData.length !== 0 && (
+                <Marker coordinates={routeData[0].src}>
+                  <circle r={2} fill="#0000FF" />
+                </Marker>
+              )}
+              {routeData.map((curr)=>{
+                return(  
+                  <Line
+                  from={curr.src}
+                  to={curr.dest}
+                  stroke="#000000"
+                  strokeWidth={1}
+                  strokeLineCap="round"
+                />)
+              })}
+            </ZoomableGroup>
+          </ComposableMap>
+          <Button onClick={onZoomIn}>Zoom in</Button>
+          <Button onClick={onZoomOut}>Zoom out</Button>
+      </Grid>
+      <Grid item xs = {12} sm = {6}>
+        <Paper elevation={2}>
+          <center><Pie data={piedata}/></center>
+        </Paper>
+      </Grid>
+      <Grid item xs = {12} sm = {6}>
+        <Paper elevation={2}>
+          <center><Donut data={donutdata} /></center>
+        </Paper>
+      </Grid>
+      <Grid item xs = {12} sm = {12}>
+        <Paper elevation={2}>
+          <Table data={datum}/>
+        </Paper>
+      </Grid>
+    </Grid>
+    </div>
   );
 };
 

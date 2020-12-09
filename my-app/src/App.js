@@ -13,7 +13,7 @@ function App() {
           Hackathon
         </Toolbar>
       </AppBar>
-      <Typography variant="h3">CNI SWABS2LABS HACKATHON</Typography>
+      <Typography variant="h5">CNI SWABS2LABS HACKATHON</Typography>
        <IndiaMap />
     </div>
   );

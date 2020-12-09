@@ -63,7 +63,7 @@ const getHeatMapData = () => {
       //console.log(INDIA_TOPO_JSON)
     const [tooltipContent, setTooltipContent] = useState('');
     const [data, setData] = useState(getHeatMapData());
-
+    const [area, setArea] = useState("")
     const [open, setOpen] = React.useState(false);
     const [variable,setVariable]=useState(false);
     const [pass,setPass]=useState('');
@@ -95,7 +95,8 @@ const getHeatMapData = () => {
       };
     };
   
-    const onClick = (geo)=>{
+    const onClick = (curr)=>{
+        setArea(curr.NAME.toLowerCase())
         setOpen(true)
     }
     const onMouseLeave = () => {
@@ -164,14 +165,14 @@ const getHeatMapData = () => {
                   style={geographyStyle}
                   onMouseEnter={onMouseEnter(geo, current)}
                   onMouseLeave={onMouseLeave}
-                  onClick={()=>{onClick(geo)}}
+                  onClick={()=>{onClick(current)}}
                 />
               );
             })
           }
         </Geographies>
     </ComposableMap>
-    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+    <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" >
         <DialogTitle id="form-dialog-title">Upload data</DialogTitle>
         <DialogContent>
             <DialogContentText>
@@ -180,8 +181,11 @@ const getHeatMapData = () => {
         </DialogContent>
         <DialogActions>
             <form onSubmit={onSubmit}>
+                <label>District Data:</label><br/>
                 <input type="file" name="file1"  onChange= {handleFileChange}/><br/>
+                <label>Lab Data:</label><br/>
                 <input type="file" name="file2"  onChange= {handleFileChange}/><br/>
+                <label>Transfer Data:</label><br/>
                 <input type="file" name="file3"  onChange= {handleFileChange}/><br/>
                 <Button type="submit" color="primary">Submit File</Button>
             </form>
@@ -197,7 +201,7 @@ const getHeatMapData = () => {
   }
   {variable===true &&(
     <div>
-      <Map datum={pass}/>
+      <Map datum={pass} area={area}/>
     </div>
   )}
 </>
