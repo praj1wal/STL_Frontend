@@ -47,9 +47,9 @@ const renderActiveShape = (props) => {
       />
       <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
       <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`PV ${value}`}</text>
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`${value} Labs`}</text>
       <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
-        {`(Rate ${(percent * 100).toFixed(2)}%)`}
+        {`(${(percent * 100).toFixed(2)}%)`}
       </text>
     </g>
   );
@@ -58,18 +58,18 @@ const renderActiveShape = (props) => {
 
 function LevelPieChart(props) {
 
-  const [activeIndex, setIndex] = useState(null);
+  const [activeIndex, setIndex] = useState(0);
 
   const onPieEnter = (data, index) => {
     setIndex(index)
   }
 
   const onPieExit = (data, index) => {
-    setIndex(null)
+    setIndex(0)
   }
 
   return (
-    <div style={{width:"100%", height:400}}>
+    <div style={{width:"100%", height:300}}>
       <ResponsiveContainer>
         <PieChart >
           <Pie
@@ -78,7 +78,7 @@ function LevelPieChart(props) {
             data={props.data}
             innerRadius={60}
             outerRadius={80}
-            fill="#8884d8"
+            fill='#5893d8'
             dataKey="value"
             onMouseEnter={onPieEnter}
             onMouseLeave={onPieExit}

@@ -25,10 +25,15 @@ def upload_file():
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 print(filename)
-                data = pd.read_excel(file)
+                data = []
+                if filename.rsplit('.', 1)[1].lower() == "csv":
+                    data = pd.read_csv(file)
+                elif filename.rsplit('.', 1)[1].lower() == "xlsx":
+                    data = pd.read_excel(file)
                 data.to_json()
                 currdata = {"length":data.shape[0]}
                 for col in data.columns:
+                    print(col)
                     currdata[col] = list(data[col])
                 jsondata.append(currdata)
         return  jsonify(jsondata)

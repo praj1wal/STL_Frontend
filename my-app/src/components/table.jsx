@@ -99,10 +99,10 @@ export default function Table(props) {
     for(var i = 0; i < props.data[1].length; i++){
       rows2.push({
         "id":props.data[1].id[i],
-        "lab_type":props.data[1].lab_type[i],
+        "lab_type":props.data[1].lab_type[i]===0?"public":"private",
         "lat":props.data[1].lat[i],
         "lon":props.data[1].lon[i],
-        "district_id":props.data[1].district_id[i],
+        "district_id":props.data[0].district_name[props.data[1].district_id[i]-1],
         "capacity":props.data[1].capacity[i],
         "backlogs":props.data[1].backlogs[i]
       })
@@ -111,7 +111,7 @@ export default function Table(props) {
     for(var i = 0; i < props.data[2].length; i++){
       rows3.push({
         "id":i+1,
-        "source":props.data[2].source[i],
+        "source":props.data[0].district_name[props.data[2].source[i]-1],
         "destination":props.data[2].destination[i],
         "transfer_type":props.data[2].transfer_type[i],
         "samples_transferred":props.data[2].samples_transferred[i]

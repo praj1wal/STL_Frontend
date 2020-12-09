@@ -5,27 +5,15 @@ import ReactTooltip from 'react-tooltip';
 import Pie from './Pie';
 import Donut from './donut';
 import Table from './table';
-import {Grid, Paper, Button} from '@material-ui/core';
+import {Grid, Paper, Button, Typography, Divider} from '@material-ui/core';
 import LinearGradient from './LinearGradient';
   const PROJECTION_CONFIG = {
     scale:1000,
   };
-  
 
 
 
-  const COLOR_RANGE = [
-    '#ffedea',
-    '#ffcec5',
-    '#ffad9f',
-    '#ff8a75',
-    '#ff5533',
-    '#e2492d',
-    '#be3d26',
-    '#9a311f',
-    '#782618'
-  ];
-  
+  const COLORS1 = ['#eedc9b','#dcf483','#8ee677', '#5fd4a8','#53bbc9', '#5893d8']
   const DEFAULT_COLOR = '#EEE';
 
   const geographyStyle = {
@@ -81,16 +69,18 @@ console.log("This is datum",datum)
     const [piedata, setPieData] = useState([])
     const [donutdata, setDonutData] = useState([])
     const [routeData, setRouteData] = useState([])
+    const [selectedDist, setDistrict] = useState("Click On A District To See Lab Data")
     const gradientData = {
-      fromColor: COLOR_RANGE[0],
-      toColor: COLOR_RANGE[COLOR_RANGE.length - 1],
+      fromColor: COLORS1[0],
+      toColor: COLORS1[COLORS1.length - 1],
       min: 0,
       max: data.reduce((max, item) => (item.value > max ? item.value : max), 0)
     };
   
-    const colorScale = scaleQuantile()
-      .domain(data.map(d => d.value))
-      .range(COLOR_RANGE);
+
+    const color1 = scaleQuantile()
+      .domain(data.map(d=>d.value))
+      .range(COLORS1)
   
     const onMouseEnter = (geo, current = { value: 'NA' }) => {
       return () => {
@@ -127,6 +117,7 @@ console.log("This is datum",datum)
       var nayadata=[{"name":"publiclab" ,"value": dondata[curr.dt_code].publiclab},{"name":"privatelab" ,"value": dondata[curr.dt_code].privatelab}]
       console.log("This is nayadata",nayadata)
       setDonutData(nayadata)
+      setDistrict(curr.district)
     };
 
     const showRoute = (curr) => {
@@ -165,13 +156,13 @@ console.log("This is datum",datum)
     };
 
   return (
-    <div style={{overflow:"hidden"}}>
+    <div style={{overflow:"hidden",}} >
     <Grid container spacing={2} >
-      <Grid item xs={2} sm={2} style={{marginLeft:"5%"}}>
+      <Grid item xs = {12} sm = {8} >
           <h2>{area.toUpperCase()}</h2>
           <LinearGradient data={gradientData} />
-      </Grid>
-      <Grid item xs = {8} sm = {8} >
+          <Button onClick={onZoomIn}>Zoom in</Button>
+          <Button onClick={onZoomOut}>Zoom out</Button>
           <ReactTooltip>{tooltipContent}</ReactTooltip>
           <ComposableMap
               projectionConfig={PROJECTION_CONFIG}
@@ -180,7 +171,7 @@ console.log("This is datum",datum)
               height={150}
               data-tip=""
           >
-            <ZoomableGroup zoom={zoomdata} filterZoomEvent={handleFilter} center={[77,15]}>
+            <ZoomableGroup zoom={zoomdata} filterZoomEvent={handleFilter} center={[77,15]} onDoubleClick={onZoomIn}>
               <Geographies geography={KARNATAKA_TOPO_JSON}>
                 {({ geographies }) =>
                   geographies.map(geo => {
@@ -190,7 +181,7 @@ console.log("This is datum",datum)
                       <Geography
                         key={geo.rsmKey}
                         geography={geo}
-                        fill={current ? colorScale(current.value) : DEFAULT_COLOR}
+                        fill={current ? color1(current.value) : DEFAULT_COLOR}
                         style={geographyStyle}
                         onMouseEnter={onMouseEnter(geo, current)}
                         onMouseLeave={onMouseLeave}
@@ -211,28 +202,23 @@ console.log("This is datum",datum)
                   from={curr.src}
                   to={curr.dest}
                   stroke="#000000"
-                  strokeWidth={1}
+                  strokeWidth={1/zoomdata}
                   strokeLineCap="round"
                 />)
               })}
             </ZoomableGroup>
           </ComposableMap>
-          <Button onClick={onZoomIn}>Zoom in</Button>
-          <Button onClick={onZoomOut}>Zoom out</Button>
       </Grid>
-      <Grid item xs = {12} sm = {6}>
-        <Paper elevation={2}>
-          <center><Pie data={piedata}/></center>
-        </Paper>
-      </Grid>
-      <Grid item xs = {12} sm = {6}>
-        <Paper elevation={2}>
-          <center><Donut data={donutdata} /></center>
-        </Paper>
+      <Grid item xs = {12} sm = {4}>
+        <Typography variant="h6">Distribution of Labs as per Capacity</Typography>
+          <h3>{selectedDist}</h3>
+        <center><Pie data={piedata}/></center><br/>
+        <Typography variant="h6">Distribution of Labs as per Type</Typography>
+        <center><Donut data={donutdata} /></center>
       </Grid>
       <Grid item xs = {12} sm = {12}>
         <Paper elevation={2}>
-          <Table data={datum}/>
+          <Table data={datum} />
         </Paper>
       </Grid>
     </Grid>

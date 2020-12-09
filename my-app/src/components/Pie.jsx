@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import {PieChart, Pie, Sector, ResponsiveContainer} from 'recharts';
-const dummydata = [{name: 'Group A', value: 400}, {name: 'Group B', value: 300},
-            {name: 'Group C', value: 300}, {name: 'Group D', value: 200}];
+import {PieChart, Pie, Sector, ResponsiveContainer, Cell} from 'recharts';
 
+const COLORS1 = ['#5893d8', '#53bbc9', '#5fd4a8', '#8ee677', '#dcf483', '#eedc9b', '#0d47a1', '#90caf9'];
 const renderActiveShape = (props) => {
     const RADIAN = Math.PI / 180;
     const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle,
@@ -39,7 +38,7 @@ const renderActiveShape = (props) => {
       />
       <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
       <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`Capacity ${value}`}</text>
+      <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333" style={{fontSize:10}}>{`Capacity ${value}`}</text>
       <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
         {`Lab ${name}`}
       </text>
@@ -59,7 +58,7 @@ function TwoLevelPieChart(props){
     }
  
     return (
-      <div style={{ width: '100%', height: 400}}>
+      <div style={{ width: '100%', height: 300}}>
         <ResponsiveContainer>
           <PieChart >
             <Pie 
@@ -69,8 +68,11 @@ function TwoLevelPieChart(props){
               outerRadius={80}
               fill="#ff5533"
               onMouseEnter={onPieEnter}
-              onMouseLeave={onPieExit}
-            />
+              onMouseLeave={onPieExit}>
+                {
+                props.data.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS1[index % COLORS1.length]} />)
+                }
+            </Pie>
             </PieChart>
         </ResponsiveContainer>
        </div>

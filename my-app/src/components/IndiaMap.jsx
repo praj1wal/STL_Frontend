@@ -3,13 +3,13 @@ import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import { scaleQuantile } from 'd3-scale';
 import ReactTooltip from 'react-tooltip';
 import axios from 'axios';
-import {Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, Button} from '@material-ui/core';
+import {Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, Button, Typography, Divider} from '@material-ui/core';
 import Map from './map';
 import Pie from './Pie';
-    
+import './jumbotron.css'
   const PROJECTION_CONFIG = {
     scale: 1000,
-    center: [78.9629, 10.5937]
+    center: [80.9629, 20.5937]
   };
   
 
@@ -30,17 +30,8 @@ const getHeatMapData = () => {
     return data
 };
 
-  const COLOR_RANGE = [
-    '#ffedea',
-    '#ffcec5',
-    '#ffad9f',
-    '#ff8a75',
-    '#ff5533',
-    '#e2492d',
-    '#be3d26',
-    '#9a311f',
-    '#782618'
-  ];
+  
+  const COLOR_RANGE = ['#eedc9b','#dcf483','#8ee677', '#5fd4a8','#53bbc9', '#5893d8']
   
   const DEFAULT_COLOR = '#EEE';
 
@@ -91,7 +82,7 @@ const getHeatMapData = () => {
     const onMouseEnter = (geo, current = { value: 'NA' }) => {
       return () => {
           //console.log(geo)
-        setTooltipContent(`${geo.properties.NAME_1}: ${current.value}`);
+        setTooltipContent(`${geo.properties.NAME_1}`);
       };
     };
   
@@ -144,12 +135,22 @@ const getHeatMapData = () => {
 
   return (
     <>
-    {variable === false && <div><ReactTooltip>{tooltipContent}</ReactTooltip>
+    {variable === false && 
+    <div >
+        <div style={{paddingTop:"10%", paddingBottom:"5%"}}>
+        <center><Typography variant="h4" >CNI Hackathon 2020</Typography><br/>
+          <Divider style={{ width:"5%", height:2}} variant="middle"/><br/>
+          <Typography variant="p">
+            Please click on the state of your choice and upload district, lab and transfer data of that state.
+          </Typography></center>
+        </div>
+    
+    <ReactTooltip>{tooltipContent}</ReactTooltip>
     <ComposableMap
         projectionConfig={PROJECTION_CONFIG}
         projection="geoMercator"
         width={1000}
-        height={1000}
+        height={600}
         data-tip=""
     >
         <Geographies geography={INDIA_TOPO_JSON}>
@@ -174,29 +175,27 @@ const getHeatMapData = () => {
     </ComposableMap>
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title" >
         <DialogTitle id="form-dialog-title">Upload data</DialogTitle>
+        <form onSubmit={onSubmit}>
         <DialogContent>
             <DialogContentText>
                 Supported file extensions : xlsx and csv.
             </DialogContentText>
+                <label>District Data:</label><br/>
+                <input type="file" name="file1"  onChange= {handleFileChange}/><br/><br/>
+                <label>Lab Data:</label><br/>
+                <input type="file" name="file2"  onChange= {handleFileChange}/><br/><br/>
+                <label>Transfer Data:</label><br/>
+                <input type="file" name="file3"  onChange= {handleFileChange}/><br/><br/>
+            
         </DialogContent>
         <DialogActions>
-            <form onSubmit={onSubmit}>
-                <label>District Data:</label><br/>
-                <input type="file" name="file1"  onChange= {handleFileChange}/><br/>
-                <label>Lab Data:</label><br/>
-                <input type="file" name="file2"  onChange= {handleFileChange}/><br/>
-                <label>Transfer Data:</label><br/>
-                <input type="file" name="file3"  onChange= {handleFileChange}/><br/>
-                <Button type="submit" color="primary">Submit File</Button>
-            </form>
+            <Button type="submit" color="primary">Submit File</Button>
             <Button onClick={handleClose} color="primary">
                 Cancel
             </Button>
         </DialogActions>
+        </form>
     </Dialog>
-    <div className="center">
-        <button className="mt16" onClick={onChangeButtonClick}>Change</button>
-    </div>
     </div>
   }
   {variable===true &&(
