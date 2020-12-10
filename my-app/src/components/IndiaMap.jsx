@@ -136,11 +136,11 @@ const getHeatMapData = () => {
   return (
     <>
     {variable === false && 
-    <div >
-        <div style={{paddingTop:"10%", paddingBottom:"5%"}}>
+    <div className="divBack" >
+        <div style={{paddingTop:"2%", paddingBottom:"5%", color:"white"}}>
         <center><Typography variant="h4" >CNI Hackathon 2020</Typography><br/>
-          <Divider style={{ width:"5%", height:2}} variant="middle"/><br/>
-          <Typography variant="p">
+          <Divider style={{ width:"5%", height:2, backgroundColor:"white"}} variant="middle"/><br/>
+          <Typography component="p">
             Please click on the state of your choice and upload district, lab and transfer data of that state.
           </Typography></center>
         </div>

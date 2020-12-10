@@ -8,7 +8,8 @@
 }
 
 .divBack {
-    background-image: linear-gradient(to bottom,#141e30 0%,  #243b55 100%) ;
+    /* background-image: linear-gradient(to bottom,#141e30 0%,  #243b55 100%) ; */
+    background-image: url('../coronavirus.jpg')!important;
     background-repeat: no-repeat;
     background-blend-mode: overlay;
     background-size: 100% 100%;

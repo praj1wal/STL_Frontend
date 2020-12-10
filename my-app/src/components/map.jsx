@@ -63,7 +63,7 @@ function MapChart({ datum, area }) {
 
 
 
-  const [tooltipContent, setTooltipContent] = useState('');
+  const [tooltipContent, setTooltipContent] = useState(null);
   const [data, setData] = useState(arr);
   const [zoomdata, setZoom] = useState(1)
   const [piedata, setPieData] = useState([])

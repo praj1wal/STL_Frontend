@@ -7,7 +7,7 @@ function App() {
   return (
     <div className="App">
       <AppBar position="static">
-        <Toolbar style={{backgroundColor:"#53bbc9"}}>
+        <Toolbar style={{backgroundColor:"#141e30"}}>
           Hackathon
         </Toolbar>
       </AppBar>
