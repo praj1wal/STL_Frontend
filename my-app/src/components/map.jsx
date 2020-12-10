@@ -187,7 +187,7 @@ function MapChart({ datum, area }) {
               <Geographies geography={KARNATAKA_TOPO_JSON}>
                 {({ geographies }) =>
                   geographies.map(geo => {
-                    const current = data.find(s => s.district.toUpperCase() === geo.properties.district.toUpperCase());
+                    const current = data.find(s => s.district.toUpperCase().trim() === geo.properties.district.toUpperCase().trim());
                     // console.log("This is geo",geo);
                     return (
                       <Geography
@@ -226,7 +226,6 @@ function MapChart({ datum, area }) {
           <Paper elevation={3}>
             <h3>{selectedDist}</h3>
             <Typography variant="h6">Distribution of Labs as per Capacity</Typography><br />
-            {/* <center><Divider style={{ width:"25%", height:2, backgroundColor:"#AAA"}} variant="middle"/></center> */}
             <center><Pie data={piedata} /></center><br />
             <Typography variant="h6">Distribution of Labs as per Type</Typography><br />
             <center><Divider style={{ width: "25%", height: 2, backgroundColor: "#AAA" }} variant="middle" /></center>

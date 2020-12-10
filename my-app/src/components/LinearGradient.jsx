@@ -15,7 +15,7 @@ const LinearGradient = props => {
     <div>
       <div style={boxStyle} className="display-flex">
         <span>{data.min}</span>
-        <span className="fill">-</span>
+        <span className="fill"> - </span>
         <span>{data.max} samples</span>
       </div>
       <div style={{ ...boxStyle, ...gradientStyle }} className="mt8"></div>

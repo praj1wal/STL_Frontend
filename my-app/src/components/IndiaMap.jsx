@@ -3,30 +3,28 @@ import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import { scaleQuantile } from 'd3-scale';
 import ReactTooltip from 'react-tooltip';
 import axios from 'axios';
-import {Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, Button, Typography, Divider} from '@material-ui/core';
+import {Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText, Button, Typography, Divider ,AppBar, Toolbar} from '@material-ui/core';
 import Map from './map';
 import Pie from './Pie';
-import './jumbotron.css'
+import './background.css'
   const PROJECTION_CONFIG = {
     scale: 1000,
-    center: [80.9629, 20.5937]
+    center: [80.9629, 15]
   };
   
 
   
-const INDIA_TOPO_JSON = require('./indiaState.topo.json');
+const INDIA_TOPO_JSON = require('./IndiaState.topo.json');
 const getHeatMapData = () => {
     var data = []
-    for(var i = 0; i < INDIA_TOPO_JSON.objects.IND_adm1.geometries.length; i++){
+    for(var i = 0; i < INDIA_TOPO_JSON.objects.ne_10m_admin_1_India_Official.geometries.length; i++){
         
         let curr = {
-            ID:INDIA_TOPO_JSON.objects.IND_adm1.geometries[i].properties.ID_1,
-            NAME: INDIA_TOPO_JSON.objects.IND_adm1.geometries[i].properties.NAME_1,
-            value: i*10,
+            name: INDIA_TOPO_JSON.objects.ne_10m_admin_1_India_Official.geometries[i].properties.name,
+            value: INDIA_TOPO_JSON.objects.ne_10m_admin_1_India_Official.geometries[i].properties.population,
         }
         data.push(curr)
     }
-    //console.log("This is data",data)
     return data
 };
 
@@ -81,13 +79,12 @@ const getHeatMapData = () => {
   
     const onMouseEnter = (geo, current = { value: 'NA' }) => {
       return () => {
-          //console.log(geo)
-        setTooltipContent(`${geo.properties.NAME_1}`);
+        setTooltipContent(`${geo.properties.name}`);
       };
     };
   
     const onClick = (curr)=>{
-        setArea(curr.NAME.toLowerCase())
+        setArea(curr.name.toLowerCase())
         setOpen(true)
     }
     const onMouseLeave = () => {
@@ -133,9 +130,18 @@ const getHeatMapData = () => {
             })
     }
 
+    const handleHomeClick = () => {
+      setVariable(false)
+    }
   return (
     <>
+    <AppBar position="static">
+        <Toolbar style={{backgroundColor:"#141e30"}}>
+          <Button onClick={handleHomeClick} style={{color:"white"}}>Home</Button>
+        </Toolbar>
+      </AppBar>
     {variable === false && 
+
     <div className="divBack" >
         <div style={{paddingTop:"2%", paddingBottom:"5%", color:"white"}}>
         <center><Typography variant="h4" >CNI Hackathon 2020</Typography><br/>
@@ -150,14 +156,13 @@ const getHeatMapData = () => {
         projectionConfig={PROJECTION_CONFIG}
         projection="geoMercator"
         width={1000}
-        height={600}
+        height={700}
         data-tip=""
     >
         <Geographies geography={INDIA_TOPO_JSON}>
           {({ geographies }) =>
             geographies.map(geo => {
-              const current = data.find(s => s.ID === geo.properties.ID_1);
-              // console.log("This is geo",geo);
+              const current = data.find(s => s.name.toUpperCase() === geo.properties.name.toUpperCase());
               return (
                 <Geography
                   key={geo.rsmKey}
