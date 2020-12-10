@@ -8,13 +8,13 @@ import Table from './table';
 import {Grid, Paper, Button, Typography, Divider} from '@material-ui/core';
 import LinearGradient from './LinearGradient';
   const PROJECTION_CONFIG = {
-    scale:1000,
+    scale:1500,
   };
 
 
 
   const COLORS1 = ['#eedc9b','#dcf483','#8ee677', '#5fd4a8','#53bbc9', '#5893d8']
-  const DEFAULT_COLOR = '#EEE';
+  const DEFAULT_COLOR = '#DDD';
 
   const geographyStyle = {
     default: {
@@ -107,9 +107,15 @@ console.log("This is datum",datum)
 
     const onClick = (geo, curr) => {
       var pdata = []
+      if(curr === undefined){
+        setPieData([])
+        setDonutData([])
+        setDistrict("Click On A District To See Lab Data")
+        return
+      }
       for(var i = 0; i < datum[1].length; i++){
         if(curr.dt_code === datum[1].district_id[i]){
-          pdata.push({"name":datum[1].id[i], "value":datum[1].capacity[i]})
+          pdata.push({"name":datum[1].id[i], "capacity":datum[1].capacity[i], "backlog":datum[1].backlogs[i], "currentCapacity":datum[1].capacity[i]-datum[1].backlogs[i]})
         }
       }
       setPieData(pdata)
@@ -144,7 +150,7 @@ console.log("This is datum",datum)
               break
             }
           }
-          data.push({src:[lon, lat],dest:[destlon, destlat]})
+          data.push({src:[lon, lat],dest:[destlon, destlat], lab:datum[2].destination[i], samples:datum[2].samples_transferred[i]})
         }
       }
       console.log("This is data",data);
@@ -155,10 +161,16 @@ console.log("This is datum",datum)
       return name !== "WheelEvent";
     };
 
+    const onLineEnter = (curr) =>{
+      return () => {
+        setTooltipContent(`${selectedDist} to Lab ${curr.lab} : ${curr.samples} samples transferred`);
+      };
+    }
+
   return (
     <div style={{overflow:"hidden",}} >
     <Grid container spacing={2} >
-      <Grid item xs = {12} sm = {8} >
+      <Grid item xs = {12} sm = {7} >
           <h2>{area.toUpperCase()}</h2>
           <LinearGradient data={gradientData} />
           <Button onClick={onZoomIn}>Zoom in</Button>
@@ -168,7 +180,7 @@ console.log("This is datum",datum)
               projectionConfig={PROJECTION_CONFIG}
               projection="geoMercator"
               width={280}
-              height={150}
+              height={200}
               data-tip=""
           >
             <ZoomableGroup zoom={zoomdata} filterZoomEvent={handleFilter} center={[77,15]} onDoubleClick={onZoomIn}>
@@ -204,17 +216,22 @@ console.log("This is datum",datum)
                   stroke="#000000"
                   strokeWidth={1/zoomdata}
                   strokeLineCap="round"
+                  onMouseEnter={onLineEnter(curr)}
                 />)
               })}
             </ZoomableGroup>
           </ComposableMap>
       </Grid>
-      <Grid item xs = {12} sm = {4}>
-        <Typography variant="h6">Distribution of Labs as per Capacity</Typography>
-          <h3>{selectedDist}</h3>
+      <Grid item xs = {12} sm = {5}>
+        <Paper elevation={3}>
+        <h3>{selectedDist}</h3>
+        <Typography variant="h6">Distribution of Labs as per Capacity</Typography><br/>
+        {/* <center><Divider style={{ width:"25%", height:2, backgroundColor:"#AAA"}} variant="middle"/></center> */}
         <center><Pie data={piedata}/></center><br/>
-        <Typography variant="h6">Distribution of Labs as per Type</Typography>
+        <Typography variant="h6">Distribution of Labs as per Type</Typography><br/>
+        <center><Divider style={{ width:"25%", height:2, backgroundColor:"#AAA"}} variant="middle"/></center>
         <center><Donut data={donutdata} /></center>
+        </Paper>
       </Grid>
       <Grid item xs = {12} sm = {12}>
         <Paper elevation={2}>

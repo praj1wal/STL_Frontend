@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import { DataGrid } from '@material-ui/data-grid';
 
+
 const columns1 = [
   {field:"id", headerName:"District Id", headerAlign: 'center', width:200},
   {field:"district_name", headerName:"District Name", headerAlign: 'center', width:200},
@@ -97,6 +98,7 @@ export default function Table(props) {
     }
 
     for(var i = 0; i < props.data[1].length; i++){
+      
       rows2.push({
         "id":props.data[1].id[i],
         "lab_type":props.data[1].lab_type[i]===0?"public":"private",
@@ -137,9 +139,9 @@ export default function Table(props) {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab label="Item One" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
+          <Tab label="District Data" {...a11yProps(0)} />
+          <Tab label="Lab Data" {...a11yProps(1)} />
+          <Tab label="Solution Data" {...a11yProps(2)} />
         </Tabs>
       </AppBar>
         <TabPanel value={value} index={0} dir={theme.direction}>
