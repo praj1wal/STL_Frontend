@@ -9,7 +9,7 @@ import Pie from './Pie';
 import './background.css'
   const PROJECTION_CONFIG = {
     scale: 1000,
-    center: [80.9629, 15]
+    center: [80.9629, 20]
   };
   
 
@@ -109,7 +109,7 @@ const getHeatMapData = () => {
         data.append("file3",state.file3)
             axios
                 .post(
-                        "/",
+                        "https://cni-backend.herokuapp.com/",
                 data
                         ,
                     {
