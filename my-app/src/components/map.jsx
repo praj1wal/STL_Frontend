@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ComposableMap, Geographies, Geography, Line, Marker, ZoomableGroup } from 'react-simple-maps';
+import { ComposableMap, Geographies, Geography, Line, Marker, ZoomableGroup, Annotation } from 'react-simple-maps';
 import { scaleQuantile } from 'd3-scale';
 import ReactTooltip from 'react-tooltip';
 import Pie from './Pie';
@@ -7,6 +7,7 @@ import Donut from './donut';
 import Table from './table';
 import { Grid, Paper, Button, Typography, Divider } from '@material-ui/core';
 import LinearGradient from './LinearGradient';
+import DeleteIcon from '@material-ui/icons/Delete';
 const PROJECTION_CONFIG = {
   scale: 1500,
 };
@@ -70,6 +71,7 @@ function MapChart({ datum, area }) {
   const [donutdata, setDonutData] = useState([])
   const [routeData, setRouteData] = useState([])
   const [selectedDist, setDistrict] = useState("Click On A District To See Lab Data")
+  const [transfer1, setTransfer1] = useState(null)
   const gradientData = {
     fromColor: COLORS1[0],
     toColor: COLORS1[COLORS1.length - 1],
@@ -83,6 +85,7 @@ function MapChart({ datum, area }) {
     .range(COLORS1)
 
   const onMouseEnter = (geo, current = { value: 'NA' }) => {
+
     return () => {
       setTooltipContent(`${geo.properties.district}: ${current.value}`);
     };
@@ -140,7 +143,7 @@ function MapChart({ datum, area }) {
       }
     }
     for (i = 0; i < datum[2].length; i++) {
-      if (curr.dt_code === datum[2].source[i]) {
+      if (datum[2].transfer_type[i] === 0 && curr.dt_code === datum[2].source[i]) {
         let destlat = 0
         let destlon = 0
         for (var j = 0; j < datum[1].length; j++) {
@@ -151,6 +154,9 @@ function MapChart({ datum, area }) {
           }
         }
         data.push({ src: [lon, lat], dest: [destlon, destlat], lab: datum[2].destination[i], samples: datum[2].samples_transferred[i] })
+      }
+      else if(datum[2].transfer_type[i] === 1 && curr.dt_code === datum[2].source[i]){
+        setTransfer1(datum[2].samples_transferred[i])
       }
     }
     console.log("This is data", data);
@@ -166,6 +172,17 @@ function MapChart({ datum, area }) {
       setTooltipContent(`${selectedDist} to Lab ${curr.lab} : ${curr.samples} samples transferred`);
     };
   }
+  const onLineLeave = () => {
+    setTooltipContent(null);
+  }
+  const onMarkerEnter = () => {
+    setTooltipContent(`${selectedDist} HQ : ${transfer1} samples backlog`);
+  }
+  const onMarkerLeave = () => {
+    setTooltipContent(null);
+  }
+  console.log(tooltipContent)
+  
 
   return (
     <div style={{ overflow: "hidden", }} >
@@ -180,7 +197,7 @@ function MapChart({ datum, area }) {
             projectionConfig={PROJECTION_CONFIG}
             projection="geoMercator"
             width={280}
-            height={200}
+            height={250}
             data-tip=""
           >
             <ZoomableGroup zoom={zoomdata} filterZoomEvent={handleFilter} center={[77, 15]} onDoubleClick={onZoomIn}>
@@ -204,8 +221,22 @@ function MapChart({ datum, area }) {
                 }
               </Geographies>
               {routeData.length !== 0 && (
-                <Marker coordinates={routeData[0].src}>
-                  <circle r={2} fill="#0000FF" />
+                <Marker 
+                  coordinates={routeData[0].src}
+                  onMouseEnter={onMarkerEnter}
+                    onMouseLeave={onMarkerLeave}
+                >
+                  <g
+                    fill="transparent"
+                    stroke="#FF5200"
+                    strokeWidth="1"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    transform="translate(-12, -24)"
+                  >
+                    <circle  fill="#FF5200" cx="12" cy="10" r="3" />
+                    <path  d="M12 21.7C17.3 17 20 13 20 10a8 8 0 1 0-16 0c0 3 2.7 6.9 8 11.7z" />
+                  </g>
                 </Marker>
               )}
               {routeData.map((curr) => {
@@ -217,6 +248,7 @@ function MapChart({ datum, area }) {
                     strokeWidth={1 / zoomdata}
                     strokeLineCap="round"
                     onMouseEnter={onLineEnter(curr)}
+                    onMouseLeave={onLineLeave}
                   />)
               })}
             </ZoomableGroup>
